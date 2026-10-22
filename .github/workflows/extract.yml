@@ -1,0 +1,38 @@
+name: Test 42 Zip Extraction
+
+on:
+  workflow_dispatch:
+
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Unpack with Password 42
+        run: |
+          echo "Processing 42.zip..."
+          for i in {1..42}; do
+            if ! ls *.zip >/dev/null 2>&1; then
+              echo "No more zip files found at step $i."
+              break
+            fi
+
+            echo "Cycle $i running..."
+            for f in *.zip; do
+              # -P 42 se password pass hota hai
+              unzip -P 42 -o "$f" || true
+              rm "$f"
+            done
+          done
+
+          mkdir -p output
+          find . -maxdepth 1 -not -name '.' -not -name 'output' -not -path './.git*' -exec mv -t output/ {} + || true
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: extracted-output
+          path: output/
+          
