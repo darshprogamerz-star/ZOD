@@ -21,7 +21,6 @@ jobs:
 
             echo "Cycle $i running..."
             for f in *.zip; do
-              # -P 42 se password pass hota hai
               unzip -P 42 -o "$f" || true
               rm "$f"
             done
@@ -35,4 +34,3 @@ jobs:
         with:
           name: extracted-output
           path: output/
-          
